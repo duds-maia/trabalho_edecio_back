@@ -1,0 +1,1846 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Me Socorre API",
+    "description": "Documentação da API da plataforma de prestação de serviços Me Socorre.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Ambiente local"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Autenticação",
+      "description": "Cadastro e autenticação de usuários."
+    },
+    {
+      "name": "Clientes",
+      "description": "Consulta e atualização de clientes."
+    },
+    {
+      "name": "Prestadores",
+      "description": "Consulta e atualização de prestadores."
+    },
+    {
+      "name": "Categorias",
+      "description": "Gerenciamento das categorias de serviço."
+    },
+    {
+      "name": "Solicitações",
+      "description": "Gerenciamento das solicitações de serviço."
+    },
+    {
+      "name": "Avaliações",
+      "description": "Avaliações realizadas pelos clientes."
+    },
+    {
+      "name": "Administração",
+      "description": "Operações exclusivas de administradores."
+    },
+    {
+      "name": "Sistema",
+      "description": "Informações de disponibilidade da API."
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Sistema"
+        ],
+        "summary": "Apresenta a API",
+        "description": "Retorna o nome da API e seu estado atual.",
+        "responses": {
+          "200": {
+            "description": "API disponível."
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "Sistema"
+        ],
+        "summary": "Verifica a disponibilidade da API",
+        "description": "Endpoint simples para monitoramento de saúde da aplicação.",
+        "responses": {
+          "200": {
+            "description": "API disponível."
+          }
+        }
+      }
+    },
+    "/auth/client/register": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Cadastra um cliente",
+        "description": "Cria uma conta com o perfil de cliente.",
+        "responses": {
+          "201": {
+            "description": "Cliente cadastrado com sucesso."
+          },
+          "400": {
+            "description": "Dados de cadastro inválidos."
+          },
+          "409": {
+            "description": "E-mail já cadastrado."
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nome",
+                  "email",
+                  "senha"
+                ],
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "minLength": 2,
+                    "example": "João da Silva"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "joao@email.com"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "format": "password",
+                    "minLength": 4,
+                    "example": "123456"
+                  },
+                  "telefone": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 30,
+                    "example": "51999999999"
+                  },
+                  "endereco": {
+                    "type": "string",
+                    "minLength": 5,
+                    "example": "Rua das Flores, 100"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/provider/register": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Cadastra um prestador",
+        "description": "Cria uma conta de prestador vinculada a uma categoria. O cadastro inicia pendente de aprovação.",
+        "responses": {
+          "201": {
+            "description": "Prestador cadastrado com sucesso."
+          },
+          "400": {
+            "description": "Dados de cadastro inválidos."
+          },
+          "404": {
+            "description": "Categoria não encontrada."
+          },
+          "409": {
+            "description": "E-mail já cadastrado."
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nome",
+                  "email",
+                  "senha",
+                  "idCategoria"
+                ],
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "minLength": 2,
+                    "example": "Maria Souza"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "maria@email.com"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "format": "password",
+                    "minLength": 4,
+                    "example": "123456"
+                  },
+                  "telefone": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 30,
+                    "example": "51988888888"
+                  },
+                  "endereco": {
+                    "type": "string",
+                    "minLength": 5,
+                    "example": "Av. Central, 250"
+                  },
+                  "idCategoria": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Autentica um usuário",
+        "description": "Valida as credenciais e retorna o token JWT usado nas rotas protegidas.",
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso."
+          },
+          "400": {
+            "description": "Dados de login inválidos."
+          },
+          "401": {
+            "description": "E-mail ou senha inválidos."
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "senha"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "joao@email.com"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "123456"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/dashboard": {
+      "get": {
+        "tags": [
+          "Administração"
+        ],
+        "summary": "Consulta os indicadores administrativos",
+        "description": "Retorna totais e agrupamentos usados no painel administrativo.",
+        "responses": {
+          "200": {
+            "description": "Indicadores retornados com sucesso."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Acesso permitido apenas para administradores."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/admin/providers": {
+      "get": {
+        "tags": [
+          "Administração"
+        ],
+        "summary": "Lista os prestadores para administração",
+        "description": "Lista todos os prestadores, com filtro opcional pelo status de aprovação.",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "enum": {
+                  "type": "array",
+                  "example": [
+                    "PENDING",
+                    "APPROVED",
+                    "REJECTED",
+                    "SUSPENDED",
+                    "BANNED"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "description": "Status de aprovação do prestador."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestadores retornados com sucesso."
+          },
+          "400": {
+            "description": "Filtro de status inválido."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Acesso permitido apenas para administradores."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/admin/providers/{id}/approve": {
+      "patch": {
+        "tags": [
+          "Administração"
+        ],
+        "summary": "Aprova um prestador",
+        "description": "Aprova um prestador que está com o cadastro pendente.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
+                }
+              }
+            },
+            "description": "ID do perfil do prestador."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestador aprovado com sucesso."
+          },
+          "400": {
+            "description": "ID inválido."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Acesso permitido apenas para administradores."
+          },
+          "404": {
+            "description": "Prestador não encontrado."
+          },
+          "409": {
+            "description": "Transição de status não permitida."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/admin/providers/{id}/reject": {
+      "patch": {
+        "tags": [
+          "Administração"
+        ],
+        "summary": "Rejeita um prestador",
+        "description": "Rejeita um prestador que está com o cadastro pendente.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
+                }
+              }
+            },
+            "description": "ID do perfil do prestador."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestador rejeitado com sucesso."
+          },
+          "400": {
+            "description": "ID inválido."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Acesso permitido apenas para administradores."
+          },
+          "404": {
+            "description": "Prestador não encontrado."
+          },
+          "409": {
+            "description": "Transição de status não permitida."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/admin/providers/{id}/suspend": {
+      "patch": {
+        "tags": [
+          "Administração"
+        ],
+        "summary": "Suspende um prestador",
+        "description": "Suspende um prestador que está aprovado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
+                }
+              }
+            },
+            "description": "ID do perfil do prestador."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestador suspenso com sucesso."
+          },
+          "400": {
+            "description": "ID inválido."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Acesso permitido apenas para administradores."
+          },
+          "404": {
+            "description": "Prestador não encontrado."
+          },
+          "409": {
+            "description": "Transição de status não permitida."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/admin/providers/{id}/ban": {
+      "patch": {
+        "tags": [
+          "Administração"
+        ],
+        "summary": "Bane um prestador",
+        "description": "Bane um prestador pendente, aprovado ou suspenso.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
+                }
+              }
+            },
+            "description": "ID do perfil do prestador."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestador banido com sucesso."
+          },
+          "400": {
+            "description": "ID inválido."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Acesso permitido apenas para administradores."
+          },
+          "404": {
+            "description": "Prestador não encontrado."
+          },
+          "409": {
+            "description": "Transição de status não permitida."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/admin/providers/{id}/featured": {
+      "patch": {
+        "tags": [
+          "Administração"
+        ],
+        "summary": "Altera o destaque de um prestador",
+        "description": "Adiciona ou remove um prestador aprovado da lista de destaques.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
+                }
+              }
+            },
+            "description": "ID do perfil do prestador."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Destaque atualizado com sucesso."
+          },
+          "400": {
+            "description": "ID ou dados inválidos."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Acesso permitido apenas para administradores."
+          },
+          "404": {
+            "description": "Prestador não encontrado."
+          },
+          "409": {
+            "description": "Prestador ainda não foi aprovado."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "destaque"
+                ],
+                "properties": {
+                  "destaque": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/reviews": {
+      "get": {
+        "tags": [
+          "Administração"
+        ],
+        "summary": "Lista todas as avaliações",
+        "description": "Retorna todas as avaliações para acompanhamento administrativo.",
+        "responses": {
+          "200": {
+            "description": "Avaliações retornadas com sucesso."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Acesso permitido apenas para administradores."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/admin/requests": {
+      "get": {
+        "tags": [
+          "Administração"
+        ],
+        "summary": "Lista todas as solicitações",
+        "description": "Retorna todas as solicitações para acompanhamento administrativo.",
+        "responses": {
+          "200": {
+            "description": "Solicitações retornadas com sucesso."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Acesso permitido apenas para administradores."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/admin/clients": {
+      "get": {
+        "tags": [
+          "Administração"
+        ],
+        "summary": "Lista todos os clientes",
+        "description": "Retorna todos os clientes e as quantidades de solicitações e avaliações.",
+        "responses": {
+          "200": {
+            "description": "Clientes retornados com sucesso."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Acesso permitido apenas para administradores."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/reviews/": {
+      "post": {
+        "tags": [
+          "Avaliações"
+        ],
+        "summary": "Avalia um atendimento",
+        "description": "Permite que o cliente avalie uma solicitação concluída uma única vez.",
+        "responses": {
+          "201": {
+            "description": "Avaliação criada com sucesso."
+          },
+          "400": {
+            "description": "Dados inválidos."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Cliente sem permissão para avaliar a solicitação."
+          },
+          "404": {
+            "description": "Solicitação não encontrada."
+          },
+          "409": {
+            "description": "Solicitação não concluída ou já avaliada."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "idSolicitacao",
+                  "nota"
+                ],
+                "properties": {
+                  "idSolicitacao": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "example": 15
+                  },
+                  "nota": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "example": 5
+                  },
+                  "comentario": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 1000,
+                    "example": "Atendimento rápido e eficiente."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/": {
+      "get": {
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Lista as categorias",
+        "description": "Retorna todas as categorias de serviço em ordem alfabética.",
+        "responses": {
+          "200": {
+            "description": "Categorias retornadas com sucesso."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Cria uma categoria",
+        "description": "Cria uma categoria de serviço. Operação exclusiva de administradores.",
+        "responses": {
+          "201": {
+            "description": "Categoria criada com sucesso."
+          },
+          "400": {
+            "description": "Dados inválidos."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Acesso permitido apenas para administradores."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "example": "Eletricista"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Serviços elétricos residenciais e comerciais."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{id}": {
+      "put": {
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Atualiza uma categoria",
+        "description": "Atualiza uma categoria de serviço. Operação exclusiva de administradores.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                },
+                "minimum": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            },
+            "description": "ID da categoria."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categoria atualizada com sucesso."
+          },
+          "400": {
+            "description": "ID ou dados inválidos."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Acesso permitido apenas para administradores."
+          },
+          "404": {
+            "description": "Categoria não encontrada."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "example": "Eletricista"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Serviços elétricos residenciais e comerciais."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Exclui uma categoria",
+        "description": "Exclui uma categoria sem prestadores ou solicitações vinculados. Operação exclusiva de administradores.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                },
+                "minimum": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            },
+            "description": "ID da categoria."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Categoria excluída com sucesso."
+          },
+          "400": {
+            "description": "ID inválido."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Acesso permitido apenas para administradores."
+          },
+          "404": {
+            "description": "Categoria não encontrada."
+          },
+          "409": {
+            "description": "Categoria possui vínculos e não pode ser excluída."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/clients/{id}": {
+      "get": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Consulta um cliente",
+        "description": "Retorna o próprio perfil do cliente. Administradores podem consultar qualquer cliente.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
+                }
+              }
+            },
+            "description": "ID do usuário cliente."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cliente encontrado."
+          },
+          "400": {
+            "description": "ID inválido."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Usuário sem permissão para consultar o cliente."
+          },
+          "404": {
+            "description": "Cliente não encontrado."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Atualiza um cliente",
+        "description": "Atualiza os dados do próprio cliente. Administradores podem atualizar qualquer cliente.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
+                }
+              }
+            },
+            "description": "ID do usuário cliente."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cliente atualizado com sucesso."
+          },
+          "400": {
+            "description": "ID ou dados de atualização inválidos."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Usuário sem permissão para atualizar o cliente."
+          },
+          "404": {
+            "description": "Cliente não encontrado."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "minLength": 2,
+                    "example": "João da Silva"
+                  },
+                  "telefone": {
+                    "type": "string",
+                    "nullable": true,
+                    "minLength": 8,
+                    "maxLength": 30,
+                    "example": "51999999999"
+                  },
+                  "endereco": {
+                    "type": "string",
+                    "nullable": true,
+                    "minLength": 5,
+                    "example": "Rua das Flores, 100"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/providers/": {
+      "get": {
+        "tags": [
+          "Prestadores"
+        ],
+        "summary": "Lista os prestadores disponíveis",
+        "description": "Retorna prestadores aprovados e disponíveis, com filtros opcionais.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Busca por nome, categoria ou endereço."
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                },
+                "minimum": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            },
+            "description": "Filtra pelo ID da categoria."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestadores retornados com sucesso."
+          }
+        }
+      }
+    },
+    "/providers/{id}/reviews": {
+      "get": {
+        "tags": [
+          "Prestadores"
+        ],
+        "summary": "Lista as avaliações de um prestador",
+        "description": "Retorna a média e as avaliações de um prestador aprovado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
+                }
+              }
+            },
+            "description": "ID do perfil do prestador."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Avaliações retornadas com sucesso."
+          },
+          "400": {
+            "description": "ID inválido."
+          },
+          "404": {
+            "description": "Prestador não encontrado."
+          }
+        }
+      }
+    },
+    "/providers/{id}/review-summary": {
+      "get": {
+        "tags": [
+          "Prestadores"
+        ],
+        "summary": "Gera o resumo das avaliações",
+        "description": "Gera com IA um resumo das avaliações de um prestador aprovado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
+                }
+              }
+            },
+            "description": "ID do perfil do prestador."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resumo retornado com sucesso."
+          },
+          "400": {
+            "description": "ID inválido."
+          },
+          "404": {
+            "description": "Prestador não encontrado."
+          },
+          "503": {
+            "description": "Serviço de geração do resumo indisponível."
+          }
+        }
+      }
+    },
+    "/providers/{id}": {
+      "get": {
+        "tags": [
+          "Prestadores"
+        ],
+        "summary": "Consulta um prestador",
+        "description": "Retorna o perfil público de um prestador aprovado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
+                }
+              }
+            },
+            "description": "ID do perfil do prestador."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestador encontrado."
+          },
+          "404": {
+            "description": "Prestador não encontrado."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Prestadores"
+        ],
+        "summary": "Atualiza um prestador",
+        "description": "Atualiza o próprio perfil do prestador. Administradores podem atualizar qualquer prestador.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
+                }
+              }
+            },
+            "description": "ID do perfil do prestador."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestador atualizado com sucesso."
+          },
+          "400": {
+            "description": "ID ou dados inválidos."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Usuário sem permissão para atualizar o prestador."
+          },
+          "404": {
+            "description": "Prestador ou categoria não encontrado."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "minLength": 2,
+                    "example": "Maria Souza"
+                  },
+                  "telefone": {
+                    "type": "string",
+                    "nullable": true,
+                    "minLength": 8,
+                    "maxLength": 30,
+                    "example": "51988888888"
+                  },
+                  "endereco": {
+                    "type": "string",
+                    "nullable": true,
+                    "minLength": 5,
+                    "example": "Av. Central, 250"
+                  },
+                  "idCategoria": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/providers/{id}/status": {
+      "patch": {
+        "tags": [
+          "Prestadores"
+        ],
+        "summary": "Altera a disponibilidade do prestador",
+        "description": "Ativa ou desativa a disponibilidade de um prestador aprovado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
+                }
+              }
+            },
+            "description": "ID do perfil do prestador."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Disponibilidade atualizada com sucesso."
+          },
+          "400": {
+            "description": "ID ou dados inválidos."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Usuário sem permissão para alterar a disponibilidade."
+          },
+          "404": {
+            "description": "Prestador não encontrado."
+          },
+          "409": {
+            "description": "Prestador ainda não foi aprovado."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "disponivel"
+                ],
+                "properties": {
+                  "disponivel": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/requests/": {
+      "post": {
+        "tags": [
+          "Solicitações"
+        ],
+        "summary": "Cria uma solicitação de serviço",
+        "description": "Cria uma solicitação para um prestador aprovado, disponível e pertencente à categoria informada.",
+        "responses": {
+          "201": {
+            "description": "Solicitação criada com sucesso."
+          },
+          "400": {
+            "description": "Dados inválidos."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Acesso permitido apenas para clientes."
+          },
+          "404": {
+            "description": "Categoria não encontrada."
+          },
+          "409": {
+            "description": "Prestador indisponível ou de outra categoria."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "idCategoria",
+                  "idPrestador",
+                  "descricao",
+                  "endereco"
+                ],
+                "properties": {
+                  "idCategoria": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "example": 1
+                  },
+                  "idPrestador": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "6c0fce3a-510f-4ba7-a5fd-2236ed3fc08d"
+                  },
+                  "descricao": {
+                    "type": "string",
+                    "minLength": 10,
+                    "example": "Tomada da cozinha parou de funcionar."
+                  },
+                  "endereco": {
+                    "type": "string",
+                    "minLength": 5,
+                    "example": "Rua das Flores, 100"
+                  },
+                  "tipoAtendimento": {
+                    "type": "string",
+                    "enum": [
+                      "IMMEDIATE",
+                      "SCHEDULED"
+                    ],
+                    "default": "IMMEDIATE"
+                  },
+                  "dataAgendamento": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Obrigatória quando o atendimento for agendado."
+                  },
+                  "fotoUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://exemplo.com/foto.jpg"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Solicitações"
+        ],
+        "summary": "Lista as solicitações",
+        "description": "Lista as solicitações visíveis ao usuário autenticado, com filtro opcional por status.",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "enum": {
+                  "type": "array",
+                  "example": [
+                    "PENDING",
+                    "ACCEPTED",
+                    "IN_PROGRESS",
+                    "COMPLETED",
+                    "CANCELLED"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "description": "Status da solicitação."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicitações retornadas com sucesso."
+          },
+          "400": {
+            "description": "Filtro de status inválido."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Prestador ainda não aprovado."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/requests/{id}": {
+      "get": {
+        "tags": [
+          "Solicitações"
+        ],
+        "summary": "Consulta uma solicitação",
+        "description": "Retorna uma solicitação quando ela estiver acessível ao usuário autenticado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                },
+                "minimum": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            },
+            "description": "ID da solicitação."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicitação encontrada."
+          },
+          "400": {
+            "description": "ID inválido."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Usuário sem permissão para consultar a solicitação."
+          },
+          "404": {
+            "description": "Solicitação não encontrada."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/requests/{id}/provider": {
+      "patch": {
+        "tags": [
+          "Solicitações"
+        ],
+        "summary": "Aceita uma solicitação",
+        "description": "Permite que o prestador vinculado aceite uma solicitação pendente.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                },
+                "minimum": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            },
+            "description": "ID da solicitação."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicitação aceita com sucesso."
+          },
+          "400": {
+            "description": "ID inválido."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Prestador não aprovado ou indisponível."
+          },
+          "409": {
+            "description": "Solicitação indisponível para aceite."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/requests/{id}/status": {
+      "patch": {
+        "tags": [
+          "Solicitações"
+        ],
+        "summary": "Altera o status de uma solicitação",
+        "description": "Altera o status conforme as transições permitidas para o perfil autenticado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                },
+                "minimum": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            },
+            "description": "ID da solicitação."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso."
+          },
+          "400": {
+            "description": "ID ou status inválido."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Usuário sem permissão para alterar a solicitação."
+          },
+          "404": {
+            "description": "Solicitação não encontrada."
+          },
+          "409": {
+            "description": "Transição de status não permitida."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "status"
+                ],
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "PENDING",
+                      "ACCEPTED",
+                      "IN_PROGRESS",
+                      "COMPLETED",
+                      "CANCELLED"
+                    ],
+                    "example": "IN_PROGRESS"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/requests/{id}/value": {
+      "patch": {
+        "tags": [
+          "Solicitações"
+        ],
+        "summary": "Informa o valor final do serviço",
+        "description": "Registra o valor final de uma solicitação em andamento ou concluída.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                },
+                "minimum": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            },
+            "description": "ID da solicitação."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Valor final atualizado com sucesso."
+          },
+          "400": {
+            "description": "ID ou valor inválido."
+          },
+          "401": {
+            "description": "Token não informado, inválido ou expirado."
+          },
+          "403": {
+            "description": "Usuário sem permissão para informar o valor."
+          },
+          "404": {
+            "description": "Solicitação não encontrada."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "valorFinal"
+                ],
+                "properties": {
+                  "valorFinal": {
+                    "type": "number",
+                    "format": "double",
+                    "minimum": 0,
+                    "exclusiveMinimum": true,
+                    "example": 150.5
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Informe o token JWT retornado pelo endpoint de login."
+      }
+    }
+  }
+}

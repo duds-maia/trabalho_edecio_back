@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String           @id @default(uuid()) @db.VarChar(36)
+  name      String           @db.VarChar(100)
+  email     String           @unique @db.VarChar(120)
+  password  String
+  phone     String?          @db.VarChar(30)
+  address   String?
+  role      UserRole         @default(CLIENT)
+  provider  ProviderProfile?
+  requests  ServiceRequest[] @relation("ClientRequests")
+  reviews   Review[]         @relation("ClientReviews")
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@map("users")
+}
+
+model Category {
+  id          Int               @id @default(autoincrement())
+  name        String            @unique @db.VarChar(80)
+  description String?
+  providers   ProviderProfile[]
+  requests    ServiceRequest[]
+  createdAt   DateTime          @default(now())
+
+  @@map("categories")
+}
+
+model ProviderProfile {
+  id                   String           @id @default(uuid()) @db.VarChar(36)
+  userId               String           @unique @db.VarChar(36)
+  categoryId           Int
+  approvalStatus       ApprovalStatus   @default(PENDING)
+  isFeatured           Boolean          @default(false)
+  isAvailable          Boolean          @default(false)
+  ratingAverage        Decimal          @default(0) @db.Decimal(3, 2)
+  address              String?
+  aiSummary            String?
+  aiSummaryReviewCount Int              @default(0)
+  user                 User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category             Category         @relation(fields: [categoryId], references: [id])
+  requests             ServiceRequest[] @relation("ProviderRequests")
+  reviews              Review[]
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  @@index([categoryId, approvalStatus, isAvailable])
+  @@map("provider_profiles")
+}
+
+model ServiceRequest {
+  id          Int              @id @default(autoincrement())
+  clientId    String           @db.VarChar(36)
+  providerId  String?          @db.VarChar(36)
+  categoryId  Int
+  description String
+  address     String
+  serviceType ServiceType      @default(IMMEDIATE)
+  scheduledAt DateTime?
+  status      RequestStatus    @default(PENDING)
+  finalPrice  Decimal?         @db.Decimal(10, 2)
+  photoUrl    String?
+  client      User             @relation("ClientRequests", fields: [clientId], references: [id])
+  provider    ProviderProfile? @relation("ProviderRequests", fields: [providerId], references: [id])
+  category    Category         @relation(fields: [categoryId], references: [id])
+  review      Review?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([clientId, status])
+  @@index([providerId, status])
+  @@map("service_requests")
+}
+
+model Review {
+  id         Int             @id @default(autoincrement())
+  requestId  Int             @unique
+  clientId   String          @db.VarChar(36)
+  providerId String          @db.VarChar(36)
+  rating     Int
+  comment    String?
+  request    ServiceRequest  @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  client     User            @relation("ClientReviews", fields: [clientId], references: [id])
+  provider   ProviderProfile @relation(fields: [providerId], references: [id])
+  createdAt  DateTime        @default(now())
+
+  @@index([providerId])
+  @@map("reviews")
+}
+
+enum UserRole {
+  CLIENT
+  PROVIDER
+  ADMIN
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+  BANNED
+}
+
+enum ServiceType {
+  IMMEDIATE
+  SCHEDULED
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
