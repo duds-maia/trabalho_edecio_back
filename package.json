@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node scripts/run-tsx.mjs watch src/server.ts",
     "build": "prisma generate && tsc --noEmit",
+    "postinstall": "npx prisma generate",
     "start": "node scripts/run-tsx.mjs src/server.ts",
     "db:seed": "node scripts/run-tsx.mjs prisma/seed.ts",
     "test:integration": "node scripts/run-tsx.mjs tests/integracao.ts",
