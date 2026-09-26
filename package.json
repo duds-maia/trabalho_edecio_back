@@ -8,6 +8,7 @@
     "build": "prisma generate && tsc --noEmit",
     "postinstall": "npx prisma generate",
     "start": "node scripts/run-tsx.mjs src/server.ts",
+    "db:migrate:deploy": "prisma migrate deploy",
     "db:seed": "node scripts/run-tsx.mjs prisma/seed.ts",
     "test:integration": "node scripts/run-tsx.mjs tests/integracao.ts",
     "swagger": "node scripts/run-tsx.mjs swagger.ts"
