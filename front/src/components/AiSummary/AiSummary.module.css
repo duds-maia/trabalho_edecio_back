@@ -1,0 +1,46 @@
+.box {
+  position: relative;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #eef6fc 0%, #e6effb 100%);
+  border: 1px solid var(--steel-300);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--steel-500);
+  font-size: 11px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.title svg {
+  width: 14px;
+  height: 14px;
+  color: var(--blue-600);
+}
+
+.text {
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--blue-900);
+}
+
+.shimmer {
+  display: block;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, #dce9f6 25%, #eaf2fb 50%, #dce9f6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}

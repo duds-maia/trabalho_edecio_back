@@ -1,0 +1,151 @@
+.page {
+  padding-top: var(--space-5);
+}
+
+.listColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.header {
+  margin-bottom: var(--space-1);
+}
+
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--color-surface);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+}
+
+.search:focus-within {
+  border-color: var(--blue-500);
+  box-shadow: 0 0 0 3px var(--blue-100);
+}
+
+.search > svg {
+  position: absolute;
+  left: 14px;
+  width: 18px;
+  height: 18px;
+  color: var(--color-muted);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 var(--space-3) 0 44px;
+  border: 0;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.search input:focus {
+  outline: none;
+}
+
+.search button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-right: 6px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--gray-100);
+  cursor: pointer;
+}
+
+.search button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.mobileMap {
+  height: 220px;
+  margin-top: var(--space-1);
+}
+
+/* "Bottom sheet" sobreposto ao mapa, como no wireframe */
+.sheet {
+  position: relative;
+  margin: -28px calc(var(--space-4) * -1) 0;
+  padding: var(--space-5) var(--space-4) 0;
+  background: var(--color-bg);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: 0 -8px 20px rgba(16, 40, 64, 0.06);
+}
+
+.sheet::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 36px;
+  height: 4px;
+  margin-left: -18px;
+  border-radius: 4px;
+  background: var(--gray-300);
+}
+
+.sheetHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.mapColumn {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .page {
+    display: grid;
+    grid-template-columns: minmax(380px, 1fr) 1.15fr;
+    gap: var(--space-6);
+    padding-top: var(--space-8);
+    align-items: start;
+  }
+
+  .mobileMap {
+    display: none;
+  }
+
+  .sheet {
+    margin: var(--space-2) 0 0;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .sheet::before {
+    display: none;
+  }
+
+  .mapColumn {
+    display: block;
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-6));
+  }
+
+  .desktopMap {
+    height: calc(100dvh - var(--header-height) - var(--space-6) * 2);
+    min-height: 480px;
+    border-radius: var(--radius-xl);
+  }
+}

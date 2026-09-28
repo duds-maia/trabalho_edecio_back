@@ -1,0 +1,286 @@
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kpi svg {
+  width: 20px;
+  height: 20px;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+}
+
+.kpi strong {
+  font-size: var(--text-2xl);
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.kpi span {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+
+.kpiAlert {
+  border-color: #f0d99f;
+  background: var(--color-warning-soft);
+}
+
+.kpiAlert svg {
+  color: var(--color-warning);
+}
+
+.panels {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.panelTitle {
+  font-size: var(--text-base);
+  font-weight: 700;
+  margin-bottom: var(--space-4);
+}
+
+.breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.breakdownRow {
+  display: grid;
+  grid-template-columns: 110px 1fr 32px;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.breakdownRow > span:last-child {
+  text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--gray-100);
+  overflow: hidden;
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--blue-500);
+}
+
+.shortcuts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.shortcut {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  font-weight: 650;
+  font-size: var(--text-sm);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.shortcut:hover {
+  border-color: var(--blue-200);
+  box-shadow: var(--shadow-md);
+}
+
+.shortcut svg {
+  width: 20px;
+  height: 20px;
+  color: var(--color-primary);
+}
+
+/* ---------- Lista de prestadores ---------- */
+
+.providerGrid {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.providerItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.providerHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.providerHead > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.providerHead h3 {
+  font-size: var(--text-base);
+}
+
+.providerMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.featured {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.featured input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+}
+
+/* ---------- Análise individual ---------- */
+
+.analysis {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.infoList {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.infoList dt {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.infoList dd {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+/* ---------- Clientes / avaliações / categorias ---------- */
+
+.cards {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.row > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.rowTitle {
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+
+.rowSub {
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.counters {
+  display: flex;
+  gap: var(--space-4);
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+
+.counters strong {
+  display: block;
+  font-size: var(--text-base);
+  color: var(--gray-900);
+}
+
+.reviewCard p {
+  font-size: var(--text-sm);
+  margin: var(--space-2) 0;
+}
+
+.reviewHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+@media (min-width: 768px) {
+  .kpis {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .shortcuts {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .providerGrid,
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .panels {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .analysis {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1100px) {
+  .providerGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

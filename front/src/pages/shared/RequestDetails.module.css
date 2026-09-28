@@ -1,0 +1,250 @@
+.page {
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  align-self: flex-start;
+  padding: 6px 8px 6px 2px;
+  border: 0;
+  background: none;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.back svg {
+  width: 18px;
+  height: 18px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.header > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.header :global(.page-subtitle) {
+  margin: 0;
+}
+
+.headerIcon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--blue-100);
+  color: var(--color-primary);
+}
+
+.layout {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.main,
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+/* ---------- Linha do tempo ---------- */
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-4);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.timelineStep {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+/* traço entre as etapas */
+.timelineStep:not(:first-child)::before {
+  content: '';
+  position: absolute;
+  top: 13px;
+  right: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--gray-200);
+  z-index: 0;
+}
+
+.timelineStep.done:not(:first-child)::before {
+  background: var(--color-primary);
+}
+
+.dot {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  border: 2px solid var(--gray-200);
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.dot svg {
+  width: 14px;
+  height: 14px;
+}
+
+.done .dot {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.current .dot {
+  box-shadow: 0 0 0 4px var(--blue-100);
+}
+
+.timelineLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-muted);
+  line-height: 1.2;
+}
+
+.done .timelineLabel {
+  color: var(--gray-900);
+}
+
+/* ---------- Cards ---------- */
+
+.cardTitle {
+  font-size: var(--text-base);
+  font-weight: 700;
+  margin-bottom: var(--space-3);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.details dt {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.details dd {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--gray-900);
+}
+
+.details dd svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  margin-top: 2px;
+  color: var(--color-primary);
+}
+
+.details .emergency,
+.details .emergency svg {
+  color: var(--color-danger);
+  font-weight: 650;
+}
+
+.price {
+  font-weight: 750;
+  font-size: var(--text-base) !important;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.person > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.reviewPrompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  background: linear-gradient(180deg, var(--blue-50), #fff);
+}
+
+.reviewPrompt > svg {
+  width: 28px;
+  height: 28px;
+  fill: #f2b01e;
+  stroke: #f2b01e;
+  margin-bottom: 4px;
+}
+
+.reviewPrompt button {
+  margin-top: var(--space-2);
+}
+
+@media (min-width: 900px) {
+  .page {
+    padding-top: var(--space-6);
+    max-width: 1000px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr 320px;
+    gap: var(--space-6);
+    align-items: start;
+  }
+
+  .side {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-6));
+  }
+
+  .timelineLabel {
+    font-size: var(--text-xs);
+  }
+}

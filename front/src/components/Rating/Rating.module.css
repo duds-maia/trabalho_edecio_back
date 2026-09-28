@@ -1,0 +1,86 @@
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 650;
+  color: var(--gray-900);
+}
+
+.sm {
+  font-size: var(--text-xs);
+}
+
+.md {
+  font-size: var(--text-sm);
+}
+
+.star {
+  width: 1.15em;
+  height: 1.15em;
+  fill: #f2b01e;
+  stroke: #f2b01e;
+}
+
+.count {
+  color: var(--color-muted);
+  font-weight: 500;
+}
+
+.stars {
+  display: inline-flex;
+  gap: 1px;
+}
+
+.stars svg {
+  width: 14px;
+  height: 14px;
+}
+
+.filled {
+  fill: #f2b01e;
+  stroke: #f2b01e;
+}
+
+.empty {
+  fill: none;
+  stroke: var(--gray-300);
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.inputStars {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.inputStar {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: transform 0.1s;
+}
+
+.inputStar:hover {
+  transform: scale(1.1);
+}
+
+.inputStar svg {
+  width: 36px;
+  height: 36px;
+}
+
+.inputLabel {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  font-weight: 600;
+}
