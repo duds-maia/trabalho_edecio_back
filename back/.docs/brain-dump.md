@@ -11,7 +11,7 @@ O foco deste MVP é a escolha manual de um profissional aprovado e disponível. 
 ## Stack e execução
 
 - Node.js 20.19+, 22.12+ ou 24+, TypeScript e Express 5 para a API REST.
-- PostgreSQL (pensado para Neon) via Prisma 7 e `@prisma/adapter-pg`.
+- PostgreSQL no Supabase via Prisma 7 e `@prisma/adapter-pg`.
 - Zod para validar entradas, bcrypt com custo 12 para senhas e JWT com validade de 1 dia para sessão.
 - CORS restrito por variável de ambiente, corpo JSON limitado a 1 MB e rate limiting global e reforçado nas rotas de autenticação.
 - Gemini (`@google/genai`) para resumir avaliações de prestadores, sempre no backend.

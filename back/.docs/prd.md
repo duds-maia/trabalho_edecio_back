@@ -17,7 +17,7 @@ O Me Socorre é uma plataforma que conecta clientes que precisam de um serviço 
 - Node.js + TypeScript
 - Express (API REST)
 - Prisma ORM (adapter-pg)
-- PostgreSQL hospedado no Neon
+- PostgreSQL hospedado no Supabase
 - **bcrypt para hash/proteção da senha** e **JWT para autenticação das requisições**
 - zod para validação
 - Google Gemini API (resumo de avaliações)
@@ -107,7 +107,7 @@ Somente prestadores com status **APROVADO** e disponibilidade **DISPONÍVEL** ap
 3. **Gemini não escolhe o prestador**: a IA apenas resume avaliações. A escolha é feita pelo cliente entre os prestadores aprovados e disponíveis retornados pela API.
 4. **Controle de custo da IA**: armazenar/reutilizar o resumo do Gemini em vez de gerar a cada acesso; atualizar apenas quando houver quantidade relevante de novas avaliações.
 5. **Prestador pendente, reprovado, suspenso ou banido nunca aparece na listagem de profissionais disponíveis.**
-6. **A `DATABASE_URL` do Neon fica só no `.env`, nunca no código nem no GitHub.**
+6. **As URLs do Supabase ficam só nas variáveis do backend, nunca no código nem no GitHub.**
 7. **A aplicação deve possuir código simples de entender e de fácil manutenção.**
 8. **Toda nova solicitação deve informar `idPrestador`, e o prestador precisa estar aprovado, disponível e vinculado à categoria escolhida.**
 9. **Somente o prestador escolhido pode visualizar e aceitar a solicitação pendente.**
@@ -125,9 +125,9 @@ Somente prestadores com status **APROVADO** e disponibilidade **DISPONÍVEL** ap
 1.2. Garantir as dependências `jsonwebtoken`, `@types/jsonwebtoken`, `bcrypt` e `zod` no `package.json`. ✅
 1.3. Rodar `npm install` para confirmar que tudo instala sem erro. ✅
 
-### Etapa 2 — Banco de dados (Neon) ⏳ EM ANDAMENTO
-2.1. Criar conta/projeto no Neon. 
-2.2. Copiar a connection string (`DATABASE_URL`). ✅
+### Etapa 2 — Banco de dados (Supabase) ⏳ AGUARDANDO CONFIGURAÇÃO
+2.1. Criar projeto no Supabase e seguir `back/supabase/README.md`. 
+2.2. Configurar `DATABASE_URL` (transação) e `DIRECT_URL` (sessão) no backend.
 2.3. Criar `.env` e `.env.example` com `DATABASE_URL`, `GEMINI_API_KEY` e `JWT_SECRET`. ✅ (`.env.example` criado; chaves opcionais ainda não foram preenchidas no `.env`)
 2.4. Confirmar que `.env` está no `.gitignore`. ✅
 
@@ -143,9 +143,9 @@ Somente prestadores com status **APROVADO** e disponibilidade **DISPONÍVEL** ap
 4.5. Definir as relações de `ProviderProfile` com `User` e `Category`. ✅
 4.6. Definir os models `ServiceRequest` e `Review`, com seus relacionamentos. ✅
 
-### Etapa 5 — Migration e seed ✅ CONCLUÍDA
-5.1. Aplicar a migration `create_me_socorre` no Neon. ✅
-5.2. Conferir as tabelas criadas no Neon. ✅
+### Etapa 5 — Migration e seed ⏳ AGUARDANDO SUPABASE
+5.1. Aplicar as migrations no Supabase ou executar `back/supabase/schema.sql` no SQL Editor. ⏳
+5.2. Conferir as cinco tabelas no Supabase. ⏳
 5.3. Criar `prisma/seed.ts` com categorias iniciais (chaveiro, encanador, eletricista, vidraceiro, ar-condicionado). ✅
 
 ### Etapa 6 — Proteção de senha e autenticação JWT ✅ CONCLUÍDA
